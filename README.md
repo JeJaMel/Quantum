@@ -34,20 +34,14 @@ The repository is organized into the following sections:
 
 ### Main Components  
 
-1. **Interactive buttons**: With various styles and animations.  
-2. **Modals**: For displaying pop-up content.  
-3. **Custom inputs**: With validations and visual effects.  
-4. **Grids and layouts**: To structure web pages easily.  
+1. **Edit**:
+2. **ChechBox**: 
+3. **Wait**:
+4. **Icon**:  
+5. **StatusBar**: 
+
 
 Check the [full documentation](./Quantum/README.md) for more details.  
-
-## 🌟 Highlighted Exercises  
-
-Some of the most relevant exercises in this course include:  
-
-- **Responsive interface design**: Creating pages adaptable to different resolutions.  
-- **Dynamic applications with JavaScript**: Building apps that handle events, manipulate the DOM, and consume external data.  
-- **Integrating Quantum**: Using the framework in real projects to solve practical cases.  
 
 ## 📚 Installing and Using Quantum  
 
