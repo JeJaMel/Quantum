@@ -1,0 +1,63 @@
+/* QuantumCheckBox CSS */
+
+:host {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+.label {
+    margin-left: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #333;
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.checkbox:checked {
+    background-color: #4caf50;
+    border-color: #4caf50;
+}
+
+.checkbox:checked::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 4px;
+    height: 9px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox:focus {
+    outline: none;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.checkbox:disabled {
+    background-color: #e0e0e0;
+    border-color: #bdbdbd;
+    cursor: not-allowed;
+}
+
+.checkbox:disabled + .label {
+    color: #bdbdbd;
+    cursor: not-allowed;
+}
