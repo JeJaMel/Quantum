@@ -1,6 +1,7 @@
 export const Quantum = class extends HTMLElement{
     constructor(props){
         super()
+        this.attachShadow({ mode: "open" });
         if(props) this.props = props;
         this.modules = new Map();
         this.instances = new Map();
@@ -12,17 +13,17 @@ export const Quantum = class extends HTMLElement{
         this.cssFiles = new Map();
     } 
     
-    async getCssFile(filename) {
-        if (!this.cssFiles.has(filename)) {
+    async getCssFile(fileName) {
+        if (!this.cssFiles.has(fileName)) {
             try {
-                let css = await fetch(quantum.routes.css + filename + ".css").then(response => response.text());
-                this.cssFiles.set(filename, css);
+                let css = await fetch(quantum.routes.css + fileName + ".css").then(response => response.text());
+                this.cssFiles.set(fileName, css);
             } catch (error) {
-                console.error(`Failed to fetch CSS file: ${filename}`, error);
+                console.error(`Failed to fetch CSS file: ${fileName}`, error);
                 return null;
             }
         }
-        return this.cssFiles.get(filename);
+        return this.cssFiles.get(fileName);
     }
 
     async getSVG(fileName) {
@@ -30,12 +31,12 @@ export const Quantum = class extends HTMLElement{
             try{
             let svg = await fetch(quantum.routes.icons+fileName+".svg")
             if(!svg.ok){
-                throw new Error(`Error al cargar SVG: ${filename} `)
+                throw new Error(`Error al cargar SVG: ${fileName} `)
             }
 
             let svgText = await svg.text()
 
-            this.svgFiles.set(filename, svgtext);
+            this.svgFiles.set(fileName, svgText);
             return svgText;
 
             } catch(err){
@@ -113,8 +114,8 @@ export const Quantum = class extends HTMLElement{
         }   
     } 
     set callback(val){this._callBack = val}
-    get callback (){ return this.callback}
-    get callbackids () {return this.mapcallbackids}
+    get callback() { return this._callBack; } 
+    get callbackids() {return this.mapcallbackids}
     set callbackids(arr){ for(let id of arr){this.mapcallbackids.set(id,{}); };}
 
 }
