@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Notification</title>
+</head>
+
+    <style>
+
+        body {
+            background-color: #393939;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+    </style>
+
+<body>
+
+    <div id="target"></div>
+
+    <quantum-notification type="network" message="Unable to connect to the network." icon="error.svg" action-text="Retry" dismissible="true" action-url = "http://127.0.0.1:5500/WD_VS/Web1/Quantum/public/Testing2/QuantumNotification/"></quantum-notification>
+    <quantum-notification type="server" message="Server error occurred." icon="data-error.svg" action-text="Contact Support" dismissible="true" action-url = "https://www.river-run.com/it-blog/what-is-network-support"></quantum-notification>
+
+</body>
+
+<script src = Components.js>
+
+
+
+</script>
+
+</html>
