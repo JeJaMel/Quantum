@@ -3,6 +3,7 @@ import { QuantumCore } from './QuantumCore.js';
 export const Quantum = class extends QuantumCore {
     constructor(props) {
         super();
+        console.log("Quantum constructor");
         this.attachShadow({ mode: "open" });
         if (props) this.props = props;
         this.mapcallbackids = new Map();

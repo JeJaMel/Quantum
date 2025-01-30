@@ -3,11 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumCheckBox Testing</title>
     <script type="module" src="../js/com/Quantum.js"></script>
-    <title>Document</title>
 </head>
 <body>
-    <p>jejamel</p>
-    <quantum-checkbox checked="true" label="Accept Terms"></quantum-checkbox>
+    <div class="container">
+        <h1>QuantumCheckBox Testing</h1>
+
+        <h2>Checkbox with Group and Children</h2>
+        <quantum-checkbox 
+            id="parentCheck" 
+            label="Select All" 
+            is-parent="true" 
+            group='[{"label": "Option 1", "checked": "true"}, {"label": "Option 2"}, {"label": "Option 3"}]'>
+        </quantum-checkbox>
+
+        <h2>Current Group Status</h2>
+        <div id="groupStatus">Selected: None</div>
+    </div>
+
+    <script>
+        const parentCheckbox = document.getElementById("parentCheck");
+        const groupStatus = document.getElementById("groupStatus");
+
+        parentCheckbox.addEventListener("change", () => {
+            const selected = parentCheckbox.group
+                .filter(child => child.checked)
+                .map(child => child.label);
+
+            groupStatus.textContent = selected.length
+                ? `Selected: ${selected.join(", ")}`
+                : "Selected: None";
+        });
+    </script>
 </body>
 </html>

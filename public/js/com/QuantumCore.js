@@ -1,5 +1,6 @@
 export const QuantumCore = class {
     constructor() {
+        console.log("QuantumCore constructor");
         this.modules = new Map();
         this.instances = new Map(); 
         this.cssFiles = new Map(); 
@@ -12,6 +13,7 @@ export const QuantumCore = class {
             try {
                 const css = await fetch(`${cssPath}${fileName}.css`).then(response => response.text());
                 this.cssFiles.set(fileName, css);
+                console.log(`Archivo CSS cargado: ${fileName}`);
             } catch (error) {
                 console.error(`Error cargando el archivo CSS: ${fileName}`, error);
                 return null;
@@ -41,6 +43,7 @@ export const QuantumCore = class {
             try {
                 const module = await import(`./${className}.js`);
                 this.modules.set(className, module[className]);
+                console.log(`Clase importada: ${className}`);
             } catch (error) {
                 console.error(`Error al importar la clase: ${className}`, error);
                 return null;
