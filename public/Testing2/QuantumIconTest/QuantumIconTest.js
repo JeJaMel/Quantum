@@ -51,18 +51,38 @@ class QuantumIcon extends HTMLElement {
     }
 
     async getSVG(iconName) {
-        const svgFile = `${iconName}.svg`;
-        const response = await fetch(svgFile);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch SVG: ${response.statusText}`);
-        }
-        return await response.text();
+    const svgFile = `${iconName}.svg`;
+    const response = await fetch(svgFile);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch SVG: ${response.statusText}`);
     }
+    let svgText = await response.text();
+    
+    let tempDiv = document.createElement("div");
+    tempDiv.innerHTML = svgText;
+    let svgElement = tempDiv.querySelector("svg");
+
+    if (svgElement) {
+        // Asegurar que el SVG tiene un viewBox para adaptarse correctamente
+        if (!svgElement.hasAttribute("viewBox")) {
+            let width = svgElement.getAttribute("width") || "24";
+            let height = svgElement.getAttribute("height") || "24";
+            svgElement.setAttribute("viewBox", `0 0 ${width} ${height}`);
+        }
+
+        // Hacer que el SVG use el 100% del contenedor
+        svgElement.setAttribute("width", "100%");
+        svgElement.setAttribute("height", "100%");
+    }
+
+    return tempDiv.innerHTML;
+}
+
 
     async connectedCallback() {
         console.log("ConnectedCallback!");
         
-      //  await this.applyStyles('QuantumIconTest.css'); // Cargar el CSS
+        await this.applyStyles('QuantumIconTest.css'); // Cargar el CSS
 
         const iconName = this.getAttribute('icon-name');
         const svgElement = this.shadowRoot.querySelector('.QuantumIcon');
