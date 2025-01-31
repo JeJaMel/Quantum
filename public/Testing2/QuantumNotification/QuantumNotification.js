@@ -28,7 +28,7 @@ const QuantumNotification = class extends HTMLElement {
             styleElement.textContent = cssText;
             this.shadowRoot.appendChild(styleElement);
             this.styleLoaded = true;
-            this.shadowRoot.appendChild(this.notification); // Adjuntar el contenido después de cargar el CSS
+            this.shadowRoot.appendChild(this.notification);
             this.updateAttributes(); // Llama a los métodos de actualización de atributos después de cargar el CSS
         } catch (error) {
             console.error('Error loading CSS file:', error);
