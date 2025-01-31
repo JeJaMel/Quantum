@@ -41,6 +41,19 @@
     transition: opacity 0.3s ease-in-out;
 }
 
+.QuantumIconHint::after {
+    --size: 10px;
+    content: "";
+    display: block;
+    width: var(--size);
+    height: var(--size);
+    position: absolute;
+    background: rgb(34, 139, 34);
+    top: calc(var(--size) * -1 + 2px);
+    left: calc(50% - var(--size) / 2);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
 .QuantumContainerSVG {
     display: flex;
     align-items: center;
