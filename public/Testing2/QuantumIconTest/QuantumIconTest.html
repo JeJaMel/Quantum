@@ -7,10 +7,23 @@
 </head>
 <body>
 
-    <quantum-icon icon-name="data-error" caption="Web"></quantum-icon>
-    <quantum-icon icon-name="error" caption="Error"></quantum-icon>
-    <quantum-icon icon-name="pepe" caption="Button" is-button hint="Soy un hint"></quantum-icon>
+    <quantum-icon icon-name="data-error" caption="Web" on-press="handlePressWeb"></quantum-icon>
+    <quantum-icon icon-name="error" caption="Error" active-shadow on-press="handlePressError"></quantum-icon>
+    <quantum-icon icon-name="pepe" caption="Button" hint="Soy un hint" on-press="handlePressButton"></quantum-icon>
 
     <script src="QuantumIconTest.js"></script>
+    <script>
+        function handlePressWeb() {
+            alert('Web icon pressed!');
+        }
+
+        function handlePressError() {
+            alert('Error icon pressed!');
+        }
+
+        function handlePressButton() {
+            alert('Button icon pressed!');
+        }
+    </script>
 </body>
 </html>

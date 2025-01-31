@@ -23,7 +23,7 @@ class QuantumIcon extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ['icon-name', 'caption', 'hint', 'is-button'];
+        return ['icon-name', 'caption', 'hint', 'active-shadow', 'on-press'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -37,6 +37,12 @@ class QuantumIcon extends HTMLElement {
                     break;
                 case 'hint':
                     this.updateHint();
+                    break;
+                case 'active-shadow':
+                    this.updateActiveShadow();
+                    break;
+                case 'on-press':
+                    this.updateOnPress();
                     break;
             }
         }
@@ -97,12 +103,12 @@ class QuantumIcon extends HTMLElement {
 
     async connectedCallback() {
         console.log("QuantumIcon connected!");
-        this.style.visibility = 'hidden'; // Ocultar mientras carga
+        this.style.visibility = 'hidden'; // Hide while loading
 
-        await this.applyStyles('QuantumIconTest.css'); // Cargar CSS
+        await this.applyStyles('QuantumIconTest.css'); // Load css
 
         this.updateAttributes();
-        this.style.visibility = 'visible'; // Mostrar tras carga completa
+        this.style.visibility = 'visible'; //Show after loading
 
         const container = this.shadowRoot.querySelector('.QuantumIconContainer');
         const hintElement = this.shadowRoot.querySelector('.QuantumIconHint');
@@ -113,12 +119,18 @@ class QuantumIcon extends HTMLElement {
         container.addEventListener('mouseleave', () => {
             hintElement.style.visibility = 'hidden';
         });
+
+        container.addEventListener('click', () => {
+            this.executeOnPress();
+        });
     }
 
     updateAttributes() {
         this.updateIcon();
         this.updateCaption();
         this.updateHint();
+        this.updateActiveShadow();
+        this.updateOnPress();
     }
 
     async updateIcon() {
@@ -139,6 +151,30 @@ class QuantumIcon extends HTMLElement {
         hintElement.style.visibility = hint ? 'hidden' : 'hidden';
     }
 
+    updateActiveShadow() {
+        const container = this.shadowRoot.querySelector('.QuantumIconContainer');
+        if (this.hasAttribute('active-shadow')) {
+            container.classList.add('active-shadow');
+        } else {
+            container.classList.remove('active-shadow');
+        }
+    }
+
+    updateOnPress() {
+        // This method can be used to update any state if needed
+    }
+
+    executeOnPress() {
+        const onPress = this.getAttribute('on-press');
+        if (onPress) {
+            const func = window[onPress];
+            if (typeof func === 'function') {
+                func.call(this);
+            } else {
+                console.warn(`Function ${onPress} is not defined`);
+            }
+        }
+    }
 }
 
 window.customElements.define('quantum-icon', QuantumIcon);

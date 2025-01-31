@@ -62,13 +62,8 @@
     max-height: 90%;
 }
 
-.QuantumIconContainer:active {
+.QuantumIconContainer:active.active-shadow {
     box-shadow: var(--boxShadowIcon);
-}
-
-.QuantumIconContainer:hover {
-    cursor: var(--cursorIcon);
-    border-color: var(--borderColorIcon);
 }
 
 .QuantumIconCaption {
