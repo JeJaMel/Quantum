@@ -21,6 +21,26 @@ class QuantumIcon extends HTMLElement {
         return template;
     }
 
+    static get observedAttributes() {
+        return ['icon-name', 'caption', 'hint'];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (this.styleLoaded) {
+            switch(name) {
+                case 'icon-name':
+                    this.updateIcon();
+                    break;
+                case 'caption':
+                    this.updateCaption();
+                    break;
+                case 'hint':
+                    this.updateHint();
+                    break;
+            }
+        }
+    }
+
     async getCssFile(fileName) {
         if(!this.cssFiles.has(fileName)){
             let css = await fetch(fileName).then((response) => {
@@ -45,50 +65,76 @@ class QuantumIcon extends HTMLElement {
             styleElement.textContent = cssText;
             this.shadowRoot.appendChild(styleElement);
             this.styleLoaded = true;
+            this.updateAttributes(); // Llama a los métodos de actualización de atributos después de cargar el CSS
         } catch (error) {
             console.error('Error loading CSS file:', error);
         }
     }
 
     async getSVG(iconName) {
-    const svgFile = `${iconName}.svg`;
-    const response = await fetch(svgFile);
-    if (!response.ok) {
-        throw new Error(`Failed to fetch SVG: ${response.statusText}`);
-    }
-    let svgText = await response.text();
-    
-    let tempDiv = document.createElement("div");
-    tempDiv.innerHTML = svgText;
-    let svgElement = tempDiv.querySelector("svg");
+        const svgFile = `${iconName}.svg`;
+        const response = await fetch(svgFile);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch SVG: ${response.statusText}`);
+        }
+        let svgText = await response.text();
+        
+        let tempDiv = document.createElement("div");
+        tempDiv.innerHTML = svgText;
+        let svgElement = tempDiv.querySelector("svg");
 
-    if (svgElement) {
-        // Asegurar que el SVG tiene un viewBox para adaptarse correctamente
-        if (!svgElement.hasAttribute("viewBox")) {
-            let width = svgElement.getAttribute("width") || "24";
-            let height = svgElement.getAttribute("height") || "24";
-            svgElement.setAttribute("viewBox", `0 0 ${width} ${height}`);
+        if (svgElement) {
+            // Asegurar que el SVG tiene un viewBox para adaptarse correctamente
+            if (!svgElement.hasAttribute("viewBox")) {
+                let width = svgElement.getAttribute("width") || "24";
+                let height = svgElement.getAttribute("height") || "24";
+                svgElement.setAttribute("viewBox", `0 0 ${width} ${height}`);
+            }
+
+            // Hacer que el SVG use el 100% del contenedor
+            svgElement.setAttribute("width", "100%");
+            svgElement.setAttribute("height", "100%");
         }
 
-        // Hacer que el SVG use el 100% del contenedor
-        svgElement.setAttribute("width", "100%");
-        svgElement.setAttribute("height", "100%");
+        return tempDiv.innerHTML;
     }
-
-    return tempDiv.innerHTML;
-}
-
 
     async connectedCallback() {
         console.log("ConnectedCallback!");
         
         await this.applyStyles('QuantumIconTest.css'); // Cargar el CSS
 
+        this.updateAttributes(); // Llama a los métodos de actualización de atributos después de cargar el CSS
+    }
+
+    updateAttributes() {
+        this.updateIcon();
+        this.updateCaption();
+        this.updateHint();
+    }
+
+    async updateIcon() {
         const iconName = this.getAttribute('icon-name');
         const svgElement = this.shadowRoot.querySelector('.QuantumIcon');
         
         const svgContent = await this.getSVG(iconName);
         svgElement.innerHTML = svgContent;
+    }
+
+    updateCaption() {
+        const caption = this.getAttribute('caption');
+        const captionElement = this.shadowRoot.querySelector('.QuantumIconCaption');
+        if (captionElement) {
+            captionElement.textContent = caption;
+        }
+    }
+
+    updateHint() {
+        const hint = this.getAttribute('hint');
+        const hintElement = this.shadowRoot.querySelector('.QuantumIconHint');
+        if (hintElement) {
+            hintElement.textContent = hint;
+        }
     }
 }
 
