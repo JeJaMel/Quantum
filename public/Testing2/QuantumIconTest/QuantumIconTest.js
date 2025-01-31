@@ -78,7 +78,7 @@ class QuantumIcon extends HTMLElement {
     async getSVG(iconName) {
         if (!iconName) return '';
         try {
-            const response = await fetch(`${iconName}.svg`);
+            const response = await fetch(`icons/${iconName}.svg`);
             if (!response.ok) throw new Error(`Failed to fetch SVG: ${response.statusText}`);
             const svgText = await response.text();
             const tempDiv = document.createElement("div");
