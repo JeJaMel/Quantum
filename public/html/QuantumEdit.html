@@ -1,24 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuantumEdit Test</title>
-    <script type="module" src="../js/com/QuantumEdit.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f9f9f9;
-        }
-    </style>
-</head>
-<body>
-    <p>jejamierda</p>
-    <quantum-edit></quantum-edit> 
-</body>
+<html>
+    <head>
+        <script type="module" src="../js/com/Quantum.js"></script>
+        <script type="module" src="../js/com/QuantumEdit.js"></script>
+      
+    </head>
+    <body>
+        <script>
+            let quantumInit = async () => {
+                let e = await quantum.createInstance("QuantumEdit", {
+                    'id':'editQuantum', 
+                    'required' : true,
+                    'type':'text',
+                    'placeholder' : 'Hola',
+                    'message': 'Ingrese un valor válido',
+                    'caption' : 'Quantum Editor:',
+                    'hiddenValue' : "valor oculto", 
+                    // 'style' : {'left':'10px', 'top':'100px'},
+                    'events' : {
+                        'click': ()=>{ 
+                            console.log('Hizo click en QuantumEdit...');
+                            console.log("Instancia del HTML:", quantum.getInstance("editQuantum"));
+                        }
+                    }
+                });
+
+                e.built = async ()=>{
+                    quantum.e2 = document.getElementById('MyQuantumEdit');
+                    e.addEventListener('enter', ()=>{ console.log("Se pulsó Enter")});
+                    e.caption="Por favor escriba su mensaje";
+                    let f = document.getElementById('f1');
+                    f.appendChild(e);
+                }
+            };
+        </script>
+        <form id="f1">
+            <quantum-edit id="MyQuantumEdit" placeholder="hola" required=true type="text" message="Valor inválido" reactive=true onblur='console.log("Se perdió el foco")' hiddenValue="50" onescape='alert("Se pulsó Esc")' caption="Edit Quantum:" style="position:absolute; left:10px; top:20px"></quantum-edit>
+        </form>
+    </body>
 </html>

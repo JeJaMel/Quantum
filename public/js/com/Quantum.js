@@ -39,7 +39,7 @@ export const Quantum = class extends HTMLElement{
             return svgText;
 
             } catch(err){
-                console.error(`Error in getSVG: ${err.message} `);
+                console.error(`Error en getSVG: ${err.message} `);
                 return null;
             }
         } else {
@@ -138,7 +138,7 @@ export const Quantum = class extends HTMLElement{
                 }
             }
         }
-    }//  que verguero estas haciendo aca hermano naguevona que puta locura nojoda pa vi
+    }
     
     quantum.routes = {
         css : '../js/css/',
