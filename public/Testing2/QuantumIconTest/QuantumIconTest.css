@@ -22,6 +22,7 @@
     z-index: 1000;
     position: absolute;
     visibility: hidden;
+    opacity: 0;
     padding: 8px;
     background: rgb(34, 139, 34);
     color: white;
@@ -30,21 +31,14 @@
     font-family: 'Trebuchet MS', sans-serif;
     text-align: center;
     border-radius: 5px;
-    top: calc(var(--heightIcon) * 2.5);
-    transition: visibility 0.3s, opacity 0.3s;
+    top: calc(var(--heightIcon) * 1.8); 
+    transition: visibility 0s linear 0.3s, opacity 0.1s ease-in-out;
 }
 
-.QuantumIconHint::after {
-    --size: 10px;
-    content: "";
-    display: block;
-    width: var(--size);
-    height: var(--size);
-    position: absolute;
-    background: rgb(34, 139, 34);
-    top: calc(var(--size) * -1 + 2px);
-    left: calc(50% - var(--size) / 2);
-    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+.QuantumIconContainer:hover .QuantumIconHint {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .QuantumContainerSVG {
@@ -73,23 +67,4 @@
     font-family: 'Segoe UI', sans-serif;
     text-align: center;
     user-select: none;
-}
-
-@keyframes showhint {
-    from {
-        opacity: 0%;
-    }
-    to {
-        opacity: 100%;
-    }
-}
-
-@keyframes hidehint {
-    from {
-        opacity: 100%;
-    }
-    to {
-        opacity: 0%;
-        visibility: hidden;
-    }
 }
