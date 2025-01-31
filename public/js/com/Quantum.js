@@ -98,7 +98,6 @@ export const Quantum = class extends HTMLElement{
     async createInstance(className, props){
         try{
             if(!this.instances.has(props.id)){
-                
                 props.notify = false;
                 let newClass = await this.getClass(className);
                 let i = new newClass(props);
@@ -112,6 +111,7 @@ export const Quantum = class extends HTMLElement{
             return null;
         }   
     } 
+    
     set callback(val){this._callBack = val}
     get callback (){ return this.callback}
     get callbackids () {return this.mapcallbackids}

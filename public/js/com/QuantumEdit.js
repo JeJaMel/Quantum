@@ -17,6 +17,8 @@ export const QuantumEdit = class extends Quantum {
         this._message = "";
     }
 
+    
+
     async #getCss() {
         return quantum.getCssFile("QuantumEdit");
     }
@@ -177,8 +179,11 @@ export const QuantumEdit = class extends Quantum {
         return this.labelElement.innerText;
     }
     set caption(val) {
-        this.setAttributeAndUpdate("caption", val);
-        this.dispatchEvent(new CustomEvent("changeCaption", { bubbles: true }));
+        // this.setAttributeAndUpdate("caption", val);
+        this.setAttribute("caption", value);
+        let label = this.shadowRoot?.querySelector('.QuantumEditLabel');
+        if(label) label.textContent = value;
+        this.dispatchEvent(new CustomEvent("changeCaption", { detail: { caption: value }}));
     }
 
     get value() {
@@ -189,12 +194,12 @@ export const QuantumEdit = class extends Quantum {
         this.#animationUp();
     }
 
-    get hiddenValue() {
-        return this._hiddenValue;
-    }
-    set hiddenValue(val) {
-        this.setAttributeAndUpdate("hiddenValue", val);
-    }
+    // get hiddenValue() {
+    //     return this._hiddenValue;
+    // }
+    // set hiddenValue(val) {
+    //     this.setAttributeAndUpdate("hiddenValue", val);
+    // }
 
     get disabled() {
         return this.inputElement.disabled;
