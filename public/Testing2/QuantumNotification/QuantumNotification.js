@@ -108,7 +108,7 @@ const QuantumNotification = class extends HTMLElement {
                     bodyElement.textContent = 'There was a validation error with your input.';
                     break;
                 default:
-                    titleElement.textContent = 'Saving Error';
+                    titleElement.textContent = 'Error';
                     bodyElement.textContent = 'We have problems to communicate with services';
                     break;
             }
