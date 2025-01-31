@@ -1,13 +1,14 @@
 class QuantumIcon extends HTMLElement {
-    constructor(){
+    constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({ mode: 'open' });
         const template = this.#getTemplate();
         this.shadowRoot.appendChild(template.content.cloneNode(true));
-        this.cssFiles = new Map(); // Asegúrate de inicializar cssFiles aquí
+        this.cssFiles = new Map();
+        this.styleLoaded = false;
     }
 
-    #getTemplate(){
+    #getTemplate() {
         const template = document.createElement('template');
         template.innerHTML = `
         <div class="QuantumIconContainer">
@@ -17,17 +18,17 @@ class QuantumIcon extends HTMLElement {
             <div class="QuantumIconCaption"></div>
             <div class="QuantumIconHint"></div>
         </div>                
-        `; 
+        `;
         return template;
     }
 
     static get observedAttributes() {
-        return ['icon-name', 'caption', 'hint'];
+        return ['icon-name', 'caption', 'hint', 'is-button'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (this.styleLoaded) {
-            switch(name) {
+            switch (name) {
                 case 'icon-name':
                     this.updateIcon();
                     break;
@@ -42,69 +43,76 @@ class QuantumIcon extends HTMLElement {
     }
 
     async getCssFile(fileName) {
-        if(!this.cssFiles.has(fileName)){
-            let css = await fetch(fileName).then((response) => {
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch CSS: ${response.statusText}`);
-                }
-                return response.text();
-            });
-            if(!this.cssFiles.has(fileName)) {
+        if (!this.cssFiles.has(fileName)) {
+            try {
+                let css = await fetch(fileName).then(response => {
+                    if (!response.ok) throw new Error(`Failed to fetch CSS: ${response.statusText}`);
+                    return response.text();
+                });
                 this.cssFiles.set(fileName, css);
+            } catch (error) {
+                console.error('Error loading CSS file:', error);
+                return null;
             }
-            return css;
-        } else {
-            return this.cssFiles.get(fileName);
         }
+        return this.cssFiles.get(fileName);
     }
 
     async applyStyles(cssFileName) {
-        try {
-            const cssText = await this.getCssFile(cssFileName);
+        const cssText = await this.getCssFile(cssFileName);
+        if (cssText) {
             const styleElement = document.createElement('style');
             styleElement.textContent = cssText;
             this.shadowRoot.appendChild(styleElement);
             this.styleLoaded = true;
-            this.updateAttributes(); // Llama a los métodos de actualización de atributos después de cargar el CSS
-        } catch (error) {
-            console.error('Error loading CSS file:', error);
+            this.updateAttributes();
         }
     }
 
     async getSVG(iconName) {
-        const svgFile = `${iconName}.svg`;
-        const response = await fetch(svgFile);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch SVG: ${response.statusText}`);
-        }
-        let svgText = await response.text();
-        
-        let tempDiv = document.createElement("div");
-        tempDiv.innerHTML = svgText;
-        let svgElement = tempDiv.querySelector("svg");
+        if (!iconName) return '';
+        try {
+            const response = await fetch(`${iconName}.svg`);
+            if (!response.ok) throw new Error(`Failed to fetch SVG: ${response.statusText}`);
+            const svgText = await response.text();
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = svgText;
+            const svgElement = tempDiv.querySelector("svg");
 
-        if (svgElement) {
-            // Asegurar que el SVG tiene un viewBox para adaptarse correctamente
-            if (!svgElement.hasAttribute("viewBox")) {
-                let width = svgElement.getAttribute("width") || "24";
-                let height = svgElement.getAttribute("height") || "24";
-                svgElement.setAttribute("viewBox", `0 0 ${width} ${height}`);
+            if (svgElement) {
+                if (!svgElement.hasAttribute("viewBox")) {
+                    let width = svgElement.getAttribute("width") || "24";
+                    let height = svgElement.getAttribute("height") || "24";
+                    svgElement.setAttribute("viewBox", `0 0 ${width} ${height}`);
+                }
+                svgElement.setAttribute("width", "100%");
+                svgElement.setAttribute("height", "100%");
             }
-
-            // Hacer que el SVG use el 100% del contenedor
-            svgElement.setAttribute("width", "100%");
-            svgElement.setAttribute("height", "100%");
+            return tempDiv.innerHTML;
+        } catch (error) {
+            console.error('Error loading SVG:', error);
+            return '';
         }
-
-        return tempDiv.innerHTML;
     }
 
     async connectedCallback() {
-        console.log("ConnectedCallback!");
-        
-        await this.applyStyles('QuantumIconTest.css'); // Cargar el CSS
+        console.log("QuantumIcon connected!");
+        this.style.visibility = 'hidden'; // Ocultar mientras carga
 
-        this.updateAttributes(); // Llama a los métodos de actualización de atributos después de cargar el CSS
+        await this.applyStyles('QuantumIconTest.css'); // Cargar CSS
+
+        this.updateAttributes();
+        this.style.visibility = 'visible'; // Mostrar tras carga completa
+
+        const container = this.shadowRoot.querySelector('.QuantumIconContainer');
+        const hintElement = this.shadowRoot.querySelector('.QuantumIconHint');
+
+        container.addEventListener('mouseenter', () => {
+            if (this.getAttribute('hint')) hintElement.style.visibility = 'visible';
+        });
+        container.addEventListener('mouseleave', () => {
+            hintElement.style.visibility = 'hidden';
+        });
     }
 
     updateAttributes() {
@@ -116,26 +124,21 @@ class QuantumIcon extends HTMLElement {
     async updateIcon() {
         const iconName = this.getAttribute('icon-name');
         const svgElement = this.shadowRoot.querySelector('.QuantumIcon');
-        
-        const svgContent = await this.getSVG(iconName);
-        svgElement.innerHTML = svgContent;
+        svgElement.innerHTML = await this.getSVG(iconName);
     }
 
     updateCaption() {
-        const caption = this.getAttribute('caption');
-        const captionElement = this.shadowRoot.querySelector('.QuantumIconCaption');
-        if (captionElement) {
-            captionElement.textContent = caption;
-        }
+        const caption = this.getAttribute('caption') || '';
+        this.shadowRoot.querySelector('.QuantumIconCaption').textContent = caption;
     }
 
     updateHint() {
-        const hint = this.getAttribute('hint');
+        const hint = this.getAttribute('hint') || '';
         const hintElement = this.shadowRoot.querySelector('.QuantumIconHint');
-        if (hintElement) {
-            hintElement.textContent = hint;
-        }
+        hintElement.textContent = hint;
+        hintElement.style.visibility = hint ? 'hidden' : 'hidden';
     }
+
 }
 
 window.customElements.define('quantum-icon', QuantumIcon);
