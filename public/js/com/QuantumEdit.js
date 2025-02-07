@@ -120,7 +120,7 @@ export const QuantumEdit = class extends Quantum {
         this.inputElement.addEventListener("focus", () => this.#animationUp());
         this.inputElement.addEventListener("change", () => {
             this.#animationUp();
-            this.valid();
+            // this.valid();
          });
         this.inputElement.addEventListener("keyup", this.#handleKeyEvents.bind(this));
         this.inputElement.addEventListener("blur", () => {
@@ -180,10 +180,10 @@ export const QuantumEdit = class extends Quantum {
     }
     set caption(val) {
         // this.setAttributeAndUpdate("caption", val);
-        this.setAttribute("caption", value);
+        this.setAttribute("caption", val);
         let label = this.shadowRoot?.querySelector('.QuantumEditLabel');
-        if(label) label.textContent = value;
-        this.dispatchEvent(new CustomEvent("changeCaption", { detail: { caption: value }}));
+        if(label) label.textContent = val;
+        this.dispatchEvent(new CustomEvent("changeCaption", { detail: { caption: val }}));
     }
 
     get value() {
@@ -194,12 +194,6 @@ export const QuantumEdit = class extends Quantum {
         this.#animationUp();
     }
 
-    // get hiddenValue() {
-    //     return this._hiddenValue;
-    // }
-    // set hiddenValue(val) {
-    //     this.setAttributeAndUpdate("hiddenValue", val);
-    // }
 
     get disabled() {
         return this.inputElement.disabled;
