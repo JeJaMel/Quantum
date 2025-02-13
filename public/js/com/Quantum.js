@@ -26,26 +26,30 @@ export const Quantum = class extends HTMLElement{
     }
 
     async getSVG(fileName) {
-        if(!this.svgFiles.has(fileName)){
-            try{
-            let svg = await fetch(quantum.routes.icons+fileName+".svg")
-            if(!svg.ok){
-                throw new Error(`Error al cargar SVG: ${filename} `)
-            }
+        if (!this.svgFiles.has(fileName)) {
+            try {
+                let svgResponse = await fetch(quantum.routes.icons + fileName + ".svg");
 
-            let svgText = await svg.text()
+                if (!svgResponse.ok) {
+                    throw new Error(`Error at loading SVG: ${fileName}`);
+                }
+                let svgText = await svgResponse.text();
+                if (!svgText) {
+                    throw new Error(`SVG response is empty for: ${fileName}`);
+                }
 
-            this.svgFiles.set(filename, svgtext);
-            return svgText;
+                this.svgFiles.set(fileName, svgText);
+                return svgText;
 
-            } catch(err){
-                console.error(`Error en getSVG: ${err.message} `);
+            } catch (err) {
+                console.error(`Error en getSVG: ${err.message}`);
                 return null;
             }
         } else {
             return this.svgFiles.get(fileName);
         }
     }
+
 
     getMaxZIndex(){
         quantum.actZIndex++;
@@ -169,8 +173,8 @@ export const Quantum = class extends HTMLElement{
         parse(val){this._value = val; return parseFloat(this._value)}
     }
     
-    addEventListener("DOMContentLoaded", () => {
-        if(quantumInit) quantumInit()
-    });
+    // addEventListener("DOMContentLoaded", () => {
+    //     if(quantumInit) quantumInit()
+    // });
 
     
