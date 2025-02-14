@@ -109,6 +109,18 @@ export const QuantumStatusBar = class extends Quantum {
                     titleElement.textContent = 'Validation Error';
                     bodyElement.textContent = 'There was a validation error with your input.';
                     break;
+                case 'warning':
+                    titleElement.textContent = 'Warning';
+                    bodyElement.textContent = 'This is a warning message.';
+                    break;
+                case 'info':
+                    titleElement.textContent = 'Information';
+                    bodyElement.textContent = 'This is an information message.';
+                    break;
+                case 'success':
+                    titleElement.textContent = 'Success';
+                    bodyElement.textContent = 'This is a success message.';
+                    break;
                 default:
                     titleElement.textContent = 'Error';
                     bodyElement.textContent = 'We have problems to communicate with services';
@@ -184,8 +196,14 @@ export const QuantumStatusBar = class extends Quantum {
         const fadeOutTime = parseInt(this.getAttribute('fadeout'), 10);
         if (!isNaN(fadeOutTime) && fadeOutTime > 0) {
             setTimeout(() => {
-                this.shadowRoot.querySelector('.error').style.animation = `fadeOut 1s ease-out`;
-                setTimeout(() => this.remove(), 1000);
+                const errorElement = this.shadowRoot.querySelector('.error');
+                if (errorElement) {
+                    errorElement.style.animation = `fadeOut 1s ease-out`;
+                    errorElement.addEventListener('animationend', () => {
+                        this.remove();
+                    }, { once: true });
+                    setTimeout(() => this.remove(), 1500);
+                }
             }, fadeOutTime * 1000);
         }
     }
