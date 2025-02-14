@@ -46,7 +46,7 @@ export const QuantumStatusBar = class extends Quantum {
             <p><strong class="error__title">Error</strong></p>
             <p>We have problems to communicate with services</p>
         </div>
-        <button class="error__action">Try again</button>
+        <button class="error__action" style="display: none;"></button>
         <button class="error__close" style="display: none;">&times;</button>
     </div>`;
         return template;
@@ -82,7 +82,6 @@ export const QuantumStatusBar = class extends Quantum {
                 case 'fadeout':
                     this.updateFadeOut();
                     break;
-
             }
         }
     }
@@ -146,8 +145,13 @@ export const QuantumStatusBar = class extends Quantum {
     updateActionText() {
         const actionText = this.getAttribute('action-text');
         const actionButton = this.shadowRoot.querySelector('.error__action');
-        if (actionButton && actionText) {
-            actionButton.textContent = actionText;
+        if (actionButton) {
+            if (actionText) {
+                actionButton.textContent = actionText;
+                actionButton.style.display = 'inline-block';
+            } else {
+                actionButton.style.display = 'none';
+            }
         }
     }
 
