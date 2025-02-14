@@ -21,9 +21,9 @@
   bottom: 10px;
   right: 10px;
   z-index: 1000;
-  animation: fadeIn 0.22s ease-out; /* Changed to opacity animation */
+  animation: fadeIn 0.22s ease-out; /* initial animation */
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 0.5;
+  line-height: 0.2;
   font-weight: 400;
   text-align: left;
   display: flex;
@@ -60,7 +60,7 @@
 .error__title {
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 5px; /* Adjusted spacing */
+  margin-bottom: 5px;
 }
 
 .error__action {
@@ -70,7 +70,7 @@
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  margin-left: auto; /* Align to the right */
+  margin-left: auto; 
 }
 
 .error__action:hover {
