@@ -1,11 +1,10 @@
-import { Quantum } from './Quantum.js';
-
-export const QuantumIcon = class extends Quantum {
-    constructor(props) {
-        super(props);
+class QuantumIcon extends HTMLElement {
+    constructor() {
+        super();
         this.attachShadow({ mode: 'open' });
-        this.template = this.#getTemplate();
-        this.QuantumIcon = document.importNode(this.template.content, true)
+        const template = this.#getTemplate();
+        this.shadowRoot.appendChild(template.content.cloneNode(true));
+        this.cssFiles = new Map();
         this.styleLoaded = false;
     }
 
@@ -49,6 +48,22 @@ export const QuantumIcon = class extends Quantum {
         }
     }
 
+    async getCssFile(fileName) {
+        if (!this.cssFiles.has(fileName)) {
+            try {
+                let css = await fetch(fileName).then(response => {
+                    if (!response.ok) throw new Error(`Failed to fetch CSS: ${response.statusText}`);
+                    return response.text();
+                });
+                this.cssFiles.set(fileName, css);
+            } catch (error) {
+                console.error('Error loading CSS file:', error);
+                return null;
+            }
+        }
+        return this.cssFiles.get(fileName);
+    }
+
     async applyStyles(cssFileName) {
         const cssText = await this.getCssFile(cssFileName);
         if (cssText) {
@@ -56,20 +71,16 @@ export const QuantumIcon = class extends Quantum {
             styleElement.textContent = cssText;
             this.shadowRoot.appendChild(styleElement);
             this.styleLoaded = true;
-            this.shadowRoot.appendChild(this.QuantumIcon)
             this.updateAttributes();
-        }
-        else {
-            throw new Error(`Failed to load CSS: ${cssFileName}`);
         }
     }
 
-    async getSVGIcon(iconName) {
+    async getSVG(iconName) {
         if (!iconName) return '';
         try {
-            const svgText = await this.getSVG(iconName);
-            if (!svgText) return '';
-
+            const response = await fetch(`icons/${iconName}.svg`);
+            if (!response.ok) throw new Error(`Failed to fetch SVG: ${response.statusText}`);
+            const svgText = await response.text();
             const tempDiv = document.createElement("div");
             tempDiv.innerHTML = svgText;
             const svgElement = tempDiv.querySelector("svg");
@@ -94,7 +105,7 @@ export const QuantumIcon = class extends Quantum {
         console.log("QuantumIcon connected!");
         this.style.visibility = 'hidden'; // Hide while loading
 
-        await this.applyStyles('QuantumIcon'); // Load css
+        await this.applyStyles('QuantumIconTest.css'); // Load css
 
         this.updateAttributes();
         this.style.visibility = 'visible'; //Show after loading

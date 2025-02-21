@@ -1,66 +1,65 @@
-import { Quantum } from './Quantum.js';
+const QuantumNotification = class extends HTMLElement {
 
-export const QuantumStatusBar = class extends Quantum {
-
-    constructor(props) {
-        super(props);
-        this.attachShadow({ mode: 'open' });
+    constructor(){
+        super();
+        this.attachShadow({mode: 'open'});
         this.template = this.#getTemplate();
-        this.statusBar = document.importNode(this.template.content, true);
+        this.notification = document.importNode(this.template.content, true);
+        this.cssFiles = new Map();
         this.styleLoaded = false;
+    }
+
+    async getCssFile(fileName) {
+        if(!this.cssFiles.has(fileName)){
+            let css = await fetch(fileName).then((response) => response.text());
+            if(!this.cssFiles.has(fileName)) {
+                this.cssFiles.set(fileName, css);
+            }
+            return css;
+        } else {
+            return this.cssFiles.get(fileName);
+        }
     }
 
     async applyStyles(cssFileName) {
         try {
             const cssText = await this.getCssFile(cssFileName);
-            if (!cssText) {
-                throw new Error(`Failed to load CSS: ${cssFileName}`);
-            }
-
             const styleElement = document.createElement('style');
-            styleElement.textContent = cssText + `
-                @keyframes fadeOut {
-                    from { opacity: 1; }
-                    to { opacity: 0; }
-                }
-            `;
+            styleElement.textContent = cssText;
             this.shadowRoot.appendChild(styleElement);
             this.styleLoaded = true;
-            this.shadowRoot.appendChild(this.statusBar);
-            this.updateAttributes();
-
+            this.shadowRoot.appendChild(this.notification);
+            this.updateAttributes(); // Llama a los métodos de actualización de atributos después de cargar el CSS
         } catch (error) {
-            console.error('Error applying CSS file:', error);
+            console.error('Error loading CSS file:', error);
         }
     }
 
-
-    #getTemplate() {
+    #getTemplate(){
         const template = document.createElement('template');
         template.innerHTML = `
-    <div class="error">
-        <div class="error__Icon">
-            <img alt="Error">
-        </div>
-        <div class="error__body">
-            <p><strong class="error__title">Error</strong></p>
-            <p>We have problems to communicate with services</p>
-        </div>
-        <button class="error__action" style="display: none;"></button>
-        <button class="error__close" style="display: none;">&times;</button>
-    </div>`;
+            <div class="error">
+                <p class="error__Icon">
+                    <img alt="Error" src="error.svg">
+                </p>
+                <div class="error__body">
+                    <p><strong class="error__title">Error</strong></p>
+                    <p>We have problems to communicate with services</p>
+                    <p><button class="error__action">Try again</button></p>
+                </div>
+                <button class="error__close" style="display: none;">&times;</button>
+            </div>`;
         return template;
     }
 
-
-    connectedCallback() {
+    connectedCallback(){
         console.log('connectedCallback called');
-        this.applyStyles('QuantumStatusBar');
+        this.applyStyles('QuantumNotification.css'); // Llama al método applyStyles con el nombre del archivo CSS
     }
 
-    attributeChangedCallback(name, oldValue, newValue) {
+    attributeChangedCallback(name, oldValue, newValue){
         if (this.styleLoaded) {
-            switch (name) {
+            switch(name) {
                 case 'type':
                     this.updateType();
                     break;
@@ -79,16 +78,15 @@ export const QuantumStatusBar = class extends Quantum {
                 case 'dismissible':
                     this.updateDismissible();
                     break;
-                case 'fadeout':
-                    this.updateFadeOut();
-                    break;
             }
         }
     }
 
-    static get observedAttributes() {
-        return ['type', 'message', 'icon', 'action-text', 'action-url', 'dismissible', 'fadeout'];
+    static get observedAttributes(){
+        return ['type', 'message', 'icon', 'action-text', 'action-url', 'dismissible'];
     }
+
+    
 
     updateType() {
         const type = this.getAttribute('type');
@@ -96,7 +94,7 @@ export const QuantumStatusBar = class extends Quantum {
         const bodyElement = this.shadowRoot.querySelector('.error__body p:nth-child(2)');
 
         if (titleElement && bodyElement) {
-            switch (type) {
+            switch(type) {
                 case 'network':
                     titleElement.textContent = 'Network Error';
                     bodyElement.textContent = 'There was a problem connecting to the network.';
@@ -108,18 +106,6 @@ export const QuantumStatusBar = class extends Quantum {
                 case 'validation':
                     titleElement.textContent = 'Validation Error';
                     bodyElement.textContent = 'There was a validation error with your input.';
-                    break;
-                case 'warning':
-                    titleElement.textContent = 'Warning';
-                    bodyElement.textContent = 'This is a warning message.';
-                    break;
-                case 'info':
-                    titleElement.textContent = 'Information';
-                    bodyElement.textContent = 'This is an information message.';
-                    break;
-                case 'success':
-                    titleElement.textContent = 'Success';
-                    bodyElement.textContent = 'This is a success message.';
                     break;
                 default:
                     titleElement.textContent = 'Error';
@@ -137,33 +123,19 @@ export const QuantumStatusBar = class extends Quantum {
         }
     }
 
-    async updateIcon() {
-        const iconName = this.getAttribute('icon');
+    updateIcon() {
+        const icon = this.getAttribute('icon');
         const iconElement = this.shadowRoot.querySelector('.error__Icon img');
-        if (iconElement && iconName) {
-            try {
-                const svgText = await this.getSVG(iconName);
-                if (svgText) {
-                    iconElement.src = `data:image/svg+xml;utf8,${encodeURIComponent(svgText)}`;
-                } else {
-                    console.error("SVG not found:", iconName);
-                }
-            } catch (error) {
-                console.error("Error loading SVG:", error);
-            }
+        if (iconElement && icon) {
+            iconElement.src = icon;
         }
     }
 
     updateActionText() {
         const actionText = this.getAttribute('action-text');
         const actionButton = this.shadowRoot.querySelector('.error__action');
-        if (actionButton) {
-            if (actionText) {
-                actionButton.textContent = actionText;
-                actionButton.style.display = 'inline-block';
-            } else {
-                actionButton.style.display = 'none';
-            }
+        if (actionButton && actionText) {
+            actionButton.textContent = actionText;
         }
     }
 
@@ -192,22 +164,6 @@ export const QuantumStatusBar = class extends Quantum {
         }
     }
 
-    updateFadeOut() {
-        const fadeOutTime = parseInt(this.getAttribute('fadeout'), 10);
-        if (!isNaN(fadeOutTime) && fadeOutTime > 0) {
-            setTimeout(() => {
-                const errorElement = this.shadowRoot.querySelector('.error');
-                if (errorElement) {
-                    errorElement.style.animation = `fadeOut 1s ease-out`;
-                    errorElement.addEventListener('animationend', () => {
-                        this.remove();
-                    }, { once: true });
-                    setTimeout(() => this.remove(), 1500);
-                }
-            }, fadeOutTime * 1000);
-        }
-    }
-
     updateAttributes() {
         this.updateType();
         this.updateMessage();
@@ -215,9 +171,8 @@ export const QuantumStatusBar = class extends Quantum {
         this.updateActionText();
         this.updateActionUrl();
         this.updateDismissible();
-        this.updateFadeOut();
     }
 
 }
 
-window.customElements.define('quantum-statusbar', QuantumStatusBar);
+window.customElements.define('quantum-notification', QuantumNotification);
