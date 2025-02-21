@@ -1,3 +1,5 @@
+
+
 export const Quantum = class extends HTMLElement{
     constructor(props){
         super()
@@ -10,6 +12,7 @@ export const Quantum = class extends HTMLElement{
         this.svgFiles = new Map();
         this.actZIndex = 0;
         this.cssFiles = new Map();
+        
     } 
     
     async getCssFile(filename) {
@@ -173,3 +176,6 @@ export const Quantum = class extends HTMLElement{
         parse(val){this._value = val; return parseFloat(this._value)}
     }
     
+addEventListener("DOMContentLoaded", () => {
+    if (quantumInit) quantumInit()
+});

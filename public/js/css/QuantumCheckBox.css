@@ -73,8 +73,8 @@
     content: "";
     position: absolute;
     display: none; 
-    left: 4px;
-    top: 3px;   
+    left: 3.5px;
+    top: 1px;   
     width: 6px;
     height: 10px; 
     border: solid white; 
@@ -86,8 +86,8 @@
     content: "";
     position: absolute;
     display: block; 
-    left: 4px;  
-    top: 3px;   
+    left: 3.5px;  
+    top: 1x;   
     width: 6px; 
     height: 10px; 
     border: solid white;
