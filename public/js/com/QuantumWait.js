@@ -45,6 +45,7 @@ export const QuantumWait = class extends Quantum {
             if (!cssText) {
                 throw new Error(`Failed to load CSS: ${cssFileName}`);
             }
+            this.style.visibility = 'hidden';
 
             const styleElement = document.createElement('style');
             styleElement.textContent = cssText;
@@ -52,6 +53,7 @@ export const QuantumWait = class extends Quantum {
             this.styleLoaded = true;
             this.shadowRoot.appendChild(this.QuantumWait);
             this.updateAttributes();
+            this.style.visibility = 'visible';
 
         } catch (error) {
             console.error('Error applying CSS file:', error);
@@ -60,14 +62,7 @@ export const QuantumWait = class extends Quantum {
 
     async connectedCallback() {
         console.log("QuantumWait connected!");
-        this.style.visibility = 'hidden';
-
         await this.applyStyles('QuantumWait');
-
-        this.updateIcon();
-        this.updateRotation();
-        this.updateSize();
-        this.style.visibility = 'visible';
     }
 
     async updateIcon() {
