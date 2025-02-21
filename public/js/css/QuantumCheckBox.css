@@ -1,63 +1,111 @@
-/* QuantumCheckBox CSS */
-
-:host {
+.QuantumCheckBox {
     display: inline-flex;
     align-items: center;
-    cursor: pointer;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    color: #333;
-}
-
-.label {
-    margin-left: 8px;
+    position: relative;
+    padding-left: 30px; 
+    margin-bottom: 15px;  
     cursor: pointer;
     user-select: none;
+    width: auto;
 }
 
-.checkbox {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #333;
-    border-radius: 4px;
-    display: inline-block;
-    position: relative;
-    background-color: #fff;
+.caption {
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin-left: 10px;
+}
+
+.QuantumCheckBox input {
+    position: absolute;
+    opacity: 0;
     cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%); 
+    height: 18px;
+    width: 18px;
+    background-color: transparent;
+    border: 2px solid #ccc;
+    border-radius: 50%;
     transition: background-color 0.3s, border-color 0.3s;
 }
 
-.checkbox:checked {
-    background-color: #4caf50;
-    border-color: #4caf50;
+.checkmarkInd {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 18px;
+    width: 18px;
+    background-color: transparent;
+    border: 2px solid #ccc;
+    border-radius: 50%;
 }
 
-.checkbox:checked::after {
+.QuantumCheckBox:hover input ~ .checkmark {
+    border-color: #ff5722;
+    background-color: #ffccbc;
+}
+
+.QuantumCheckBox input:checked ~ .checkmark {
+    border-color: #4caf50;
+    background-color: #4caf50;
+}
+
+.QuantumCheckBox input:checked ~ .checkmarkInd {
+    border-color: #4caf50;
+    background-color: #4caf50;
+}
+
+.QuantumCheckBox input:focus ~ .checkmark {
+    border-color: #ff5722;
+    box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+}
+
+.checkmark:after {
     content: "";
     position: absolute;
-    top: 2px;
-    left: 5px;
-    width: 4px;
-    height: 9px;
-    border: solid #fff;
-    border-width: 0 2px 2px 0;
+    display: none; 
+    left: 4px;
+    top: 3px;   
+    width: 6px;
+    height: 10px; 
+    border: solid white; 
+    border-width: 0 3px 3px 0; 
     transform: rotate(45deg);
 }
 
-.checkbox:focus {
-    outline: none;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+.checkmarkInd:after {
+    content: "";
+    position: absolute;
+    display: block; 
+    left: 4px;  
+    top: 3px;   
+    width: 6px; 
+    height: 10px; 
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
 }
 
-.checkbox:disabled {
-    background-color: #e0e0e0;
-    border-color: #bdbdbd;
-    cursor: not-allowed;
+.QuantumCheckBox input:checked ~ .checkmark:after {
+    display: block; 
 }
 
-.checkbox:disabled + .label {
-    color: #bdbdbd;
-    cursor: not-allowed;
+@keyframes checkmarkAnimation {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }

@@ -1,40 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuantumCheckBox Testing</title>
-    <script type="module" src="../js/com/Quantum.js"></script>
-</head>
-<body>
-    <div class="container">
-        <h1>QuantumCheckBox Testing</h1>
+<html>
+    <head>
+        <script type="module" src="../js/com/Quantum.js"></script>
+    </head>
+    <body>
+        <script>
+            let quantumInit = async () => {
+            quantum.fExt = ()=>{console.log('funcion externa ejecutada')};
+            let c = await quantum.createInstance("QuantumCheckBox", {
+                    'id':'QuantumCheckJavascript', 
+                    'caption' : 'Hola',
+                    'style' : {'left':'112px', 'top':'105px',},
+                    'events' : {'mouseup': (e)=>{ console.log('Clicked.'); }},
+                    'checked' : true,
+                });
+                c.built = ()=>{
+                    console.log('QuantumCheckBox built');
+                }
+                c.addToBody();
+            };
+        </script>
+        <quantum-check 
+        onclick = "quantum.fExt()"  
+        id = "QuantumCheckhtml" 
+        caption="hola3" 
+        style="position:absolute; left:120px; top:140px">
+        </quantum-check>
 
-        <h2>Checkbox with Group and Children</h2>
-        <quantum-checkbox 
-            id="parentCheck" 
-            label="Select All" 
-            is-parent="true" 
-            group='[{"label": "Option 1", "checked": "true"}, {"label": "Option 2"}, {"label": "Option 3"}]'>
-        </quantum-checkbox>
-
-        <h2>Current Group Status</h2>
-        <div id="groupStatus">Selected: None</div>
-    </div>
-
-    <script>
-        const parentCheckbox = document.getElementById("parentCheck");
-        const groupStatus = document.getElementById("groupStatus");
-
-        parentCheckbox.addEventListener("change", () => {
-            const selected = parentCheckbox.group
-                .filter(child => child.checked)
-                .map(child => child.label);
-
-            groupStatus.textContent = selected.length
-                ? `Selected: ${selected.join(", ")}`
-                : "Selected: None";
-        });
-    </script>
-</body>
+        <quantum-check 
+        id = "QuantumCheckhtml" 
+        caption="hola2" 
+        style="position:absolute; left:120px; top:170px">
+        </quantum-check>
+    </body>
 </html>
