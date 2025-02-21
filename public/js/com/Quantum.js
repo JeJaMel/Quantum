@@ -173,8 +173,3 @@ export const Quantum = class extends HTMLElement{
         parse(val){this._value = val; return parseFloat(this._value)}
     }
     
-    // addEventListener("DOMContentLoaded", () => {
-    //     if(quantumInit) quantumInit()
-    // });
-
-    
