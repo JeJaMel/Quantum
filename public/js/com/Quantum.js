@@ -172,3 +172,7 @@ window.Float = class extends Any {
     constructor(val) { super(val); super.add(this); }
     parse(val) { this._value = val; return parseFloat(this._value) }
 }
+
+addEventListener('DOMContentLoaded', () => {
+    if(quantumInit) quantumInit()
+} )
